@@ -12,5 +12,5 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified',]
     //Auth Routes
     Route::get('/dashboard',[DashboardController::class,'dashboard'])->name('dashboard');
     Route::get('/users',[UserController::class,'index'])->name('users');
-    Route::get('roles/update',[RoleController::class,'update'])->name('roles.update');
+    Route::post('roles/update',[RoleController::class,'update'])->name('roles.update');
 });

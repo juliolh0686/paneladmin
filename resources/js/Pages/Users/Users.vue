@@ -17,58 +17,36 @@ const props = defineProps<{
   }
 }>()
 
-const addTag = (newTag) => {
-  const tag = {
-    name: newTag,
-    code: newTag.substring(0, 2) + Math.floor(Math.random() * 10000000),
-  }
-  this.options.push(tag)
-  this.value.push(tag)
+const updateRoles = async (id: number, roles: Object) => {
+  let valores = []
+
+  roles.forEach((valor) => {
+    valores.push(valor.name)
+  })
+
+  console.log(valores)
+
+  let fromData = new FormData()
+  fromData.append('id', id.toString())
+  fromData.append('roles', JSON.stringify(valores))
+
+  const url = '/roles/update'
+
+  const rawResponse = await fetch(url, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'X-CSRF-TOKEN': (
+        document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement
+      ).content,
+    },
+    body: fromData,
+  })
+
+  const response = await rawResponse.json
+
+  console.log(response)
 }
-
-const updateRoles = async () => {
-  try {
-    const response = await fetch('roles/update', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-      },
-      body: JSON.stringify(users.roles),
-    });
-
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-
-    const data = await response.json();
-    users.data = data;
-
-  } catch (error) {
-    console.error('There was a problem with the fetch operation:', error);
-  }
-};
-
-// const updateRoles = (id: number, roles = []) => {
-//   let valores = ref([])
-//   roles.forEach((valor = []) => {
-//     console.log(valor)
-//     //valores.value.push(valor.name)
-//   })
-
-  // axios
-  //   .put('roles/update', {
-  //     id: id,
-  //     roles: valores,
-  //   })
-  //   .then(function (response) {})
-  //   .catch(function (error) {
-  //     console.log(error)
-  //   })
-}
-
-//console.log(props.users.data)
 </script>
 
 <template>
@@ -132,8 +110,7 @@ const updateRoles = async () => {
                         :options="roles"
                         :multiple="true"
                         :taggable="true"
-                        @tag="addTag"
-                        @select="updateRoles(user.id, user.roles)"
+                        @update:modelValue="updateRoles(user.id, user.roles)"
                       ></Multiselect>
                     </td>
                   </tr>
