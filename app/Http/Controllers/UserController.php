@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Inertia\Inertia;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -14,19 +16,13 @@ class UserController extends Controller
         $buscar= $request->buscar;
         $criterio = $request->criterio;
 
-        $user = User::with(['roles:id,name'])->where($criterio,'like','%'.$buscar.'%')
-        ->paginate(10);
+        $users =UserResource::collection(User::with(['roles:id,name'])->where($criterio,'like','%'.$buscar.'%')->paginate(2));
+
+        $roles = Role::select('id','name')->get();
 
         return Inertia::render('Users/Users', [
-           'pagination' =>[
-                'total'         => $user->total(),
-                'current_page'  => $user->currentPage(),
-                'per_page'      => $user->perpage(),
-                'last_page'     => $user->lastPage(),
-                'from'          => $user->firstItem(),
-                'to'            => $user->lastItem(),
-            ],
-            'user' => $user
+            'users' => $users,
+            'roles' => $roles
         ]);
     }
 }

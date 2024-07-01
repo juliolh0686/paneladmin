@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 
 //No Auth Routes
@@ -11,4 +12,5 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'),'verified',]
     //Auth Routes
     Route::get('/dashboard',[DashboardController::class,'dashboard'])->name('dashboard');
     Route::get('/users',[UserController::class,'index'])->name('users');
+    Route::get('roles/update',[RoleController::class,'update'])->name('roles.update');
 });
