@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, defineProps, onMounted } from 'vue'
+import { Ref } from 'vue'
 import DefaultLayout from '@/Layouts/Tailadmin/DefaultLayout.vue'
 import DefaultCard from '@/Components/Tailadmin/Forms/DefaultCard.vue'
 import Multiselect from 'vue-multiselect'
@@ -17,18 +18,16 @@ const props = defineProps<{
   }
 }>()
 
-const updateRoles = async (id: number, roles: Object) => {
-  let valores = []
+const updateRoles = async (id: number, roles: { name: string }[]) => {
+  let valores: Ref<string[]> = ref([])
 
   roles.forEach((valor) => {
-    valores.push(valor.name)
+    valores.value.push(valor.name)
   })
-
-  console.log(valores)
 
   let fromData = new FormData()
   fromData.append('id', id.toString())
-  fromData.append('roles', JSON.stringify(valores))
+  fromData.append('roles', JSON.stringify(valores.value))
 
   const url = '/roles/update'
 
@@ -43,9 +42,9 @@ const updateRoles = async (id: number, roles: Object) => {
     body: fromData,
   })
 
-  const response = await rawResponse.json
+  // const response = await rawResponse.json
 
-  console.log(response)
+  // console.log(response)
 }
 </script>
 
