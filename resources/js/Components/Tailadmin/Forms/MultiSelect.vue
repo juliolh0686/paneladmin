@@ -31,12 +31,14 @@ onMounted(() => {
 })
 
 const loadOptions = () => {
-  const optionsEl = document.getElementById('multiSelect') as HTMLSelectElement | null
+  const optionsEl = document.getElementById(
+    'multiSelect'
+  ) as HTMLSelectElement | null
   if (optionsEl) {
     options.value = Array.from(optionsEl.options).map((option) => ({
       value: option.value,
       text: option.innerText,
-      selected: option.selected
+      selected: option.selected,
     }))
   }
 }
@@ -94,9 +96,14 @@ const selectedValues = () => {
                     <div
                       class="my-1.5 flex items-center justify-center rounded border-[.5px] border-stroke bg-gray px-2.5 py-1.5 text-sm font-medium dark:border-strokedark dark:bg-white/30"
                     >
-                      <div class="max-w-full flex-initial">{{ options[index].text }}</div>
+                      <div class="max-w-full flex-initial">
+                        {{ options[index].text }}
+                      </div>
                       <div class="flex flex-auto flex-row-reverse">
-                        <div @click="remove(index)" class="cursor-pointer pl-2 hover:text-danger">
+                        <div
+                          @click="remove(index)"
+                          class="cursor-pointer pl-2 hover:text-danger"
+                        >
                           <svg
                             class="fill-current"
                             role="button"
@@ -168,7 +175,7 @@ const selectedValues = () => {
                       <div
                         :class="[
                           'relative flex w-full items-center border-l-2 border-transparent p-2 pl-2',
-                          option.selected ? 'border-primary' : ''
+                          option.selected ? 'border-primary' : '',
                         ]"
                       >
                         <div class="flex w-full items-center">

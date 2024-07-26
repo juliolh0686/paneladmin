@@ -5,6 +5,7 @@ import './assets/css/style.css'
 import 'jsvectormap/dist/jsvectormap.min.css'
 import 'flatpickr/dist/flatpickr.min.css'
 import 'vue-multiselect/dist/vue-multiselect.css'
+import '@vueform/multiselect/themes/default.css'
 
 import { createApp, h, DefineComponent } from 'vue'
 import { createInertiaApp } from '@inertiajs/vue3'

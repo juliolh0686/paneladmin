@@ -1,14 +1,15 @@
 <script setup lang="ts">
-import { ref, defineProps, onMounted } from 'vue'
+import { ref, defineProps } from 'vue'
 import { Ref } from 'vue'
 import DefaultLayout from '@/Layouts/Tailadmin/DefaultLayout.vue'
 import DefaultCard from '@/Components/Tailadmin/Forms/DefaultCard.vue'
-import Multiselect from '@vueform/multiselect'
+import Multiselect from 'vue-multiselect'
 
 import Pagination from '@/Components/Pagination.vue'
 
+//Importar Interfaces
 import User from '@/Interfaces/IUser'
-import Roles from '@/Interfaces/IRol'
+import Rol from '@/Interfaces/IRol'
 
 const props = defineProps<{
   users: {
@@ -16,12 +17,12 @@ const props = defineProps<{
     required: true
   }
   roles: {
-    type: Roles
+    type: Rol
     required: true
   }
 }>()
 
-const updateRoles = async (id: number, roles: { name: string }[]) => {
+const updateRoles = async (id: number, roles: Rol[]) => {
   let valores: Ref<string[]> = ref([])
 
   roles.forEach((valor) => {
@@ -103,15 +104,6 @@ const updateRoles = async (id: number, roles: { name: string }[]) => {
                     <td class="py-5 px-4">
                       <Multiselect
                         v-model="user.roles"
-                        :options="roles"
-                        mode="tags"
-                        :searchable="true"
-                        :create-option="true"
-                        label="name"
-                        track-by="id"
-                      />
-                      <!-- <Multiselect
-                        v-model="user.roles"
                         placeholder="Agregar un Rol"
                         label="name"
                         track-by="id"
@@ -122,7 +114,7 @@ const updateRoles = async (id: number, roles: { name: string }[]) => {
                         :multiple="true"
                         :taggable="true"
                         @update:modelValue="updateRoles(user.id, user.roles)"
-                      ></Multiselect> -->
+                      ></Multiselect>
                     </td>
                   </tr>
                 </tbody>

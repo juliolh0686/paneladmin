@@ -1,53 +1,56 @@
 <script setup lang="ts">
-import { ref, defineProps, onMounted } from 'vue'
+import { ref, defineProps } from 'vue'
 import { Ref } from 'vue'
 import DefaultLayout from '@/Layouts/Tailadmin/DefaultLayout.vue'
 import DefaultCard from '@/Components/Tailadmin/Forms/DefaultCard.vue'
-import Multiselect from '@vueform/multiselect'
+import multiselect from 'vue-multiselect'
 
 import Pagination from '@/Components/Pagination.vue'
+import MultiSelect from '@/Components/Tailadmin/Forms/MultiSelect.vue'
 
-import User from '@/Interfaces/IUser'
-import Roles from '@/Interfaces/IRol'
+import { router } from '@inertiajs/vue3'
 
+//Importar Interfaces
+import Permission from '@/Interfaces/IPermission'
+import Rol from '@/Interfaces/IRol'
+
+// Definir propiedades
 const props = defineProps<{
-  users: {
-    type: User
-    required: true
-  }
   roles: {
-    type: Roles
-    required: true
+    data: Rol[]
+    meta: {
+      from: number
+      to: number
+      total: number
+      links: Array<{
+        url: string | null
+        label: string
+        active: boolean
+      }>
+    }
   }
+  permission: Permission[]
 }>()
 
-const updateRoles = async (id: number, roles: { name: string }[]) => {
-  let valores: Ref<string[]> = ref([])
-
-  roles.forEach((valor) => {
-    valores.value.push(valor.name)
-  })
-
-  let fromData = new FormData()
-  fromData.append('id', id.toString())
-  fromData.append('roles', JSON.stringify(valores.value))
-
-  const url = '/roles/update'
-
-  const rawResponse = await fetch(url, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'X-CSRF-TOKEN': (
-        document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement
-      ).content,
-    },
-    body: fromData,
-  })
-
-  // const response = await rawResponse.json
-
-  // console.log(response)
+const updatePermissions = async (id: number, permission: Permission[]) => {
+  // let valores: Ref<string[]> = ref([])
+  // permission.forEach((valor) => {
+  //   valores.value.push(valor.name)
+  // })
+  // let fromData = new FormData()
+  // fromData.append('id', id.toString())
+  // fromData.append('permissions', JSON.stringify(valores.value))
+  // const url = '/permissions/update'
+  // const rawResponse = await fetch(url, {
+  //   method: 'POST',
+  //   headers: {
+  //     Accept: 'application/json',
+  //     'X-CSRF-TOKEN': (
+  //       document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement
+  //     ).content,
+  //   },
+  //   body: fromData,
+  // })
 }
 </script>
 
@@ -74,9 +77,9 @@ const updateRoles = async (id: number, roles: { name: string }[]) => {
                       Nombre
                     </th>
                     <th
-                      class="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white"
+                      class="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white"
                     >
-                      Correo Electronico
+                      Fecha Creación
                     </th>
                     <th
                       class="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white"
@@ -86,48 +89,44 @@ const updateRoles = async (id: number, roles: { name: string }[]) => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(user, index) in users.data" :key="index">
+                  <tr v-for="(rol, index) in roles.data" :key="index">
                     <td class="py-5 px-4 pl-9 xl:pl-11">
                       <h5 class="font-medium text-black dark:text-white">
-                        {{ user.id }}
+                        {{ rol.id }}
                       </h5>
                     </td>
                     <td class="py-5 px-4 pl-9 xl:pl-11">
                       <h5 class="font-medium text-black dark:text-white">
-                        {{ user.name }}
+                        {{ rol.name }}
+                      </h5>
+                    </td>
+                    <td class="py-5 px-4 pl-9 xl:pl-11">
+                      <h5 class="font-medium text-black dark:text-white">
+                        {{ rol.created_at }}
                       </h5>
                     </td>
                     <td class="py-5 px-4">
-                      <p class="text-black dark:text-white">{{ user.email }}</p>
-                    </td>
-                    <td class="py-5 px-4">
-                      <Multiselect
-                        v-model="user.roles"
-                        :options="roles"
-                        mode="tags"
-                        :searchable="true"
-                        :create-option="true"
-                        label="name"
-                        track-by="id"
-                      />
-                      <!-- <Multiselect
-                        v-model="user.roles"
+                      <MultiSelect></MultiSelect>
+                      <!-- <multiselect
+                        v-model="rol.permissions"
                         placeholder="Agregar un Rol"
                         label="name"
                         track-by="id"
                         :hide-selected="true"
                         :searchable="false"
                         :showLabels="false"
-                        :options="roles"
+                        :options="permission"
                         :multiple="true"
                         :taggable="true"
-                        @update:modelValue="updateRoles(user.id, user.roles)"
-                      ></Multiselect> -->
+                        @update:model-value="
+                          updatePermissions(rol.id, rol.permissions)
+                        "
+                      ></multiselect> -->
                     </td>
                   </tr>
                 </tbody>
               </table>
-              <Pagination :data="users" />
+              <Pagination :data="roles" urlPage="roles" />
             </div>
           </div>
         </DefaultCard>
